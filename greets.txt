@@ -1,0 +1,2 @@
+Name1;Name2;Name3@Hello World!;Aloha!;How's it going?;Have we met before?
+Name4;Name5@More Lines;Example config

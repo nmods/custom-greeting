@@ -1,0 +1,6 @@
+{
+	"disableAutoUpdate": false,
+    "name": "custom greeting",
+    "author": "NMods",
+	"servers": ["https://raw.githubusercontent.com/nmods/custom-greeting/master/"]
+}
