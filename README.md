@@ -5,8 +5,8 @@ Custom greeting module for Tera proxy
 Configurable greetings in `greets.txt` file
 
 ### Config file syntax
-`@` separates names from greetings
-`¤` separates individual names and greetings
+`@` separates names from greetings<br />
+`¤` separates individual names and greetings<br />
 each entry on separate line
 
 see greets.txt for example and help yourself :D
