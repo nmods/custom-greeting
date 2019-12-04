@@ -4,13 +4,13 @@
 			"overwrite": false,
 			"hash": "e016e91afb98b8cb4aa4f5c6480532e4f5a3992d6cb2660147fdc2c19d47f15b"
 		},
-		"index.js": "5e57bbd849ca02e0d26433136b1da1baf9f49ac9de1d674890e7b58170dc34e7",
+		"index.js": "8bb0529d9a97f6bed0e5c5558becfb83b0c0b611433ac7e69cc9c34d99308bf4",
 		"module.json": "ec3022d8f31c18583bd7c8a7f6c8c7ca965ef1d09fe6b84b10a2bcb94a2b14d7"
 	},
 	"defs": {
 		"C_CHAT": 1,
-		"C_START_INSTANCE_SKILL": 5,
+		"C_START_INSTANCE_SKILL": 7,
 		"S_DESPAWN_USER": 3,
-		"S_SPAWN_USER": 13
+		"S_SPAWN_USER": 15
 	}
 }

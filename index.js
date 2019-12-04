@@ -1,4 +1,5 @@
 const fs = require('fs'),
+	path = require('path'),
 	GREETS_PATH = __dirname + '\\greets.txt'
 
 let greets = []
@@ -38,7 +39,8 @@ function load() {
 load();
 
 
-module.exports = function Greets(dispatch) {
+module.exports = function Greets(mod) {
+	const command = mod.command || mod.require.command
 	let greetMessage = '';
 	let players = {}
 	let entityMap = {
@@ -58,6 +60,19 @@ module.exports = function Greets(dispatch) {
 		}
 	});
 
+	command.add('greet', (...args) => {
+		args[0] = args[0].toLowerCase()
+		switch (args[0]) {
+			case 'save':
+				saveGreets()
+				command.message('Greets saved to greets.json')
+				break
+			default:
+				console.log(greets)
+				break
+		}
+	})
+
 	function escapeHtml(string) {
 		return String(string).replace(/[&<>"'`=\/]/g, function (s) {
 			return entityMap[s];
@@ -67,6 +82,8 @@ module.exports = function Greets(dispatch) {
 	function getGreet(id) {
 		if (!greets) return '';
 		try {
+			// console.log(id)
+			// console.log(Object.keys(players))			
 			var name = players[id].name
 		} catch (e) {
 			console.log("Greeted but id not found")
@@ -85,28 +102,28 @@ module.exports = function Greets(dispatch) {
 		return ''
 	}
 
-	dispatch.hook('S_SPAWN_USER', 13, (event) => {
+	mod.hook('S_SPAWN_USER', 15, (event) => {
 		let id = event.gameId
 		players[id] = {}
 		players[id].name = event.name
 	});
 
-	dispatch.hook('S_DESPAWN_USER', 3, (event) => {
+	mod.hook('S_DESPAWN_USER', 3, (event) => {
 		let id = event.gameId
 		delete players[id]
 	});
 
-	dispatch.hook('C_START_INSTANCE_SKILL', 5, (event) => {
+	mod.hook('C_START_INSTANCE_SKILL', 7, (event) => {
 		if (event.skill.id === 60401301) {
 			// console.log(event.targets);
 			// console.log(Object.keys(players))
 			// Try pruning non-player targets
-			event.targets = event.targets.filter(targ => Object.keys(players).map(x=>BigInt(x)).includes(targ.target));
+			event.targets = event.targets.filter(targ => Object.keys(players).map(x => BigInt(x)).includes(targ.gameId));
 			// console.log(event.targets);
 
 			// Assuming here the first target is always chosen
 			if (event.targets.length > 0) {
-				let id = event.targets[0].target
+				let id = event.targets[0].gameId
 				greetMessage = getGreet(id)
 				// console.log('Name: ' + players[id].name);
 				// console.log('Greet message: ' + greetMessage);
@@ -115,7 +132,7 @@ module.exports = function Greets(dispatch) {
 	});
 
 	//modify sent greeting message
-	dispatch.hook('C_CHAT', 1, (event) => {
+	mod.hook('C_CHAT', 1, (event) => {
 		if (event.channel === 9 && greetMessage) {
 			event.message = "<FONT>" + escapeHtml(greetMessage) + "</FONT>";
 			greetMessage = null
@@ -123,7 +140,12 @@ module.exports = function Greets(dispatch) {
 		}
 	});
 
+	function saveGreets() {
+		fs.writeFile(path.join(__dirname, 'greets.json'), JSON.stringify(greets, null, '\t'), err => { });
+	}
+
 	this.destructor = () => {
 		watcher.close()
+		command.remove('greet')
 	}
 };
