@@ -1,0 +1,14 @@
+{
+    "defaultRandom": true,
+    "alwaysRandom": true,
+    "apis": {
+        "slip": true,
+        "foaas": true,
+        "forismatic": true,
+        "dadjoke": true,
+        "kanye": true,
+        "taylor": true,
+        "evilinsult": true,
+        "joke": true
+    }
+}

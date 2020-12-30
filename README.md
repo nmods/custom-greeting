@@ -1,3 +1,6 @@
+# UPDATE
+Now fetches greetings from random free apis for extra spice
+
 # Custom greeting
 
 Custom greeting module for Tera proxy
