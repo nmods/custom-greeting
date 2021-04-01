@@ -216,9 +216,11 @@ module.exports = function Greets(mod) {
 	});
 
 	//modify sent greeting message
+	//modify sent greeting message
 	mod.hook('C_CHAT', 1, (event) => {
 		if (event.channel === 9) {
-			if (greetMessage.text && (config.useDefault&&greetMessage.default) && !config.alwaysRandom) {
+			if (greetMessage.text && !config.alwaysRandom) {
+				if(greetMessage.default && !config.useDefault) return
 				event.message = "<FONT>" + escapeHtml(greetMessage.text) + "</FONT>";
 				greetMessage = {}
 				return true;
