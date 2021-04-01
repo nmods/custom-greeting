@@ -113,7 +113,7 @@ module.exports = function Greets(mod) {
 		}
 		let d=""
 		for (let key of greets) {
-			console.log(key)
+			//console.log(key)
 			if(key.alias[0]=="$DEFAULT") d = random(key.greet)
 			if (key.alias.includes(name)) {
 				return random(key.greet)
@@ -215,7 +215,6 @@ module.exports = function Greets(mod) {
 		}
 	});
 
-	//modify sent greeting message
 	//modify sent greeting message
 	mod.hook('C_CHAT', 1, (event) => {
 		if (event.channel === 9) {
