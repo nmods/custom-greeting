@@ -1,6 +1,7 @@
 {
+    "useDefault":true,
     "defaultRandom": true,
-    "alwaysRandom": true,
+    "alwaysRandom": false,
     "apis": {
         "slip": true,
         "foaas": true,
@@ -9,6 +10,9 @@
         "kanye": true,
         "taylor": true,
         "evilinsult": true,
-        "joke": true
+        "joke": true,
+        "norse": true,
+        "quotable": true,
+        "fisenko": true
     }
 }

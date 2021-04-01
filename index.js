@@ -43,7 +43,7 @@ load();
 
 module.exports = function Greets(mod) {
 	const command = mod.command || mod.require.command
-	let greetMessage = '';
+	let greetMessage = {}
 	let greetName = ''
 	let players = {}
 	let entityMap = {
@@ -68,22 +68,22 @@ module.exports = function Greets(mod) {
 		}
 	});
 
-	// command.add('greet', (...args) => {
-	// 	if(args[0]) args[0] = args[0].toLowerCase()
-	// 	switch (args[0]) {
-	// 		case 'save':
-	// 			saveGreets()
-	// 			command.message('Greets saved to greets.json')
-	// 			break
-	// 		case 'test':
-	// 			errorCount = 0
-	// 			getRandomGreeting(msg => command.message(msg))
-	// 			break
-	// 		default:
-	// 			console.log(greets)
-	// 			break
-	// 	}
-	// })
+	command.add('greet', (...args) => {
+		if(args[0]) args[0] = args[0].toLowerCase()
+		switch (args[0]) {
+			case 'save':
+				saveGreets()
+				command.message('Greets saved to greets.json')
+				break
+			case 'test':
+				errorCount = 0
+				getRandomGreeting(msg => command.message(msg))
+				break
+			default:
+				console.log(greets)
+				break
+		}
+	})
 
 	function escapeHtml(string) {
 		return String(string).replace(/[&<>"'`=\/]/g, function (s) {
@@ -110,18 +110,18 @@ module.exports = function Greets(mod) {
 			var name = players[id].name
 		} catch (e) {
 			console.log("Greeted but id not found")
-			console.log(e)
-			return
 		}
-		if (!name) return '';
+		let d=""
 		for (let key of greets) {
-			// console.log(name + " - " + key)
+			console.log(key)
+			if(key.alias[0]=="$DEFAULT") d = random(key.greet)
 			if (key.alias.includes(name)) {
 				return random(key.greet)
 			}
 		}
+		greetMessage.default=true
 		// console.log("Greeted but name not found in config")
-		return ''
+		return config.useDefault?d:""
 	}
 
 	function getRandomGreeting(cb) {
@@ -147,7 +147,8 @@ module.exports = function Greets(mod) {
 			//console.log(result)
 			if (randomApi.returnObjName) {
 				for (let objname of randomApi.returnObjName) {
-					msg = msg[objname]
+					if(objname == "@RANDOM") msg=random(msg)
+					else msg = msg[objname]
 				}
 			}
 			if (randomApi.nameReplace && msg.indexOf(randomApi.nameReplace) != -1) msg = msg.replace(randomApi.nameReplace, greetName)
@@ -198,16 +199,18 @@ module.exports = function Greets(mod) {
 			event.targets = event.targets.filter(targ => playerkeys.includes(targ.gameId));
 			// console.log(event.targets);
 
+			let id = undefined
 			// Assuming here the first target is always chosen
 			if (event.targets.length > 0) {
-				let id = event.targets[0].gameId
-				greetMessage = getGreet(id)
+				id = event.targets[0].gameId
 				greetName = players[id].name
 				// console.log('Name: ' + players[id].name);
 				// console.log('Greet message: ' + greetMessage);
 			} else {
 				greetName = ""
 			}
+			greetMessage.text = getGreet(id)
+
 			//console.log(greetName)
 		}
 	});
@@ -215,9 +218,9 @@ module.exports = function Greets(mod) {
 	//modify sent greeting message
 	mod.hook('C_CHAT', 1, (event) => {
 		if (event.channel === 9) {
-			if (greetMessage && !config.alwaysRandom) {
-				event.message = "<FONT>" + escapeHtml(greetMessage) + "</FONT>";
-				greetMessage = null
+			if (greetMessage.text && (config.useDefault&&greetMessage.default) && !config.alwaysRandom) {
+				event.message = "<FONT>" + escapeHtml(greetMessage.text) + "</FONT>";
+				greetMessage = {}
 				return true;
 			} else if (config.defaultRandom || config.alwaysRandom) {
 				errorCount = 0
